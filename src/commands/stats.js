@@ -22,32 +22,35 @@ module.exports = {
 			games: 0,
 		};
 
-		await axios
-			.request(options)
-			.then((response) => {
-				console.log(response.data);
-				newStats.deaths = response.data.br_all.deaths;
-				newStats.games = response.data.br_all.gamesPlayed;
-				newStats.kills = response.data.br_all.kills;
-			})
-			.then(() => {
-				console.log(initialStats);
-				const stats = {
-					kills: newStats.kills - initialStats.kills,
-					deaths: newStats.deaths - initialStats.deaths,
-					games: newStats.games - initialStats.games,
-					kd: 0,
-				};
-				stats.kd = stats.kills / stats.deaths;
-				interaction.reply(`Session Stats
-				Tigmarine:
-				kills = ${stats.kills}
-				deaths = ${stats.deaths}
-				games = ${stats.games}
-				k/d = ${stats.kd || 'play some games yo'}`);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+		console.log(initialStats);
+		interaction.reply('yay');
+
+		// await axios
+		// 	.request(options)
+		// 	.then((response) => {
+		// 		console.log(response.data);
+		// 		newStats.deaths = response.data.br_all.deaths;
+		// 		newStats.games = response.data.br_all.gamesPlayed;
+		// 		newStats.kills = response.data.br_all.kills;
+		// 	})
+		// 	.then(() => {
+		// 		console.log(initialStats);
+		// 		const stats = {
+		// 			kills: newStats.kills - initialStats.kills,
+		// 			deaths: newStats.deaths - initialStats.deaths,
+		// 			games: newStats.games - initialStats.games,
+		// 			kd: 0,
+		// 		};
+		// 		stats.kd = stats.kills / stats.deaths;
+		// 		interaction.reply(`Session Stats
+		// 		Tigmarine:
+		// 		kills = ${stats.kills}
+		// 		deaths = ${stats.deaths}
+		// 		games = ${stats.games}
+		// 		k/d = ${stats.kd || 'play some games yo'}`);
+		// 	})
+		// 	.catch((error) => {
+		// 		console.log(error);
+		// 	});
 	},
 };
