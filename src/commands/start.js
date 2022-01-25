@@ -2,6 +2,9 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const axios = require('axios');
 const initialStats = require('../initialStats');
+const rateLimit = require('axios-rate-limit');
+const wait = require('util').promisify(setTimeout);
+
 
 const dataArray = [];
 
@@ -14,53 +17,52 @@ const dirtbagcf =
 const rudwig =
 	'https://call-of-duty-modern-warfare.p.rapidapi.com/warzone/Rudwig%25231309/battle';
 
-const axiosInstance = axios.create({
-	method: 'GET',
-	headers: {
-		'x-rapidapi-host': process.env.rapidApiHost,
-		'x-rapidapi-key': process.env.rapidApiKey,
-	},
-});
+const axiosInstance = rateLimit(
+	axios.create({
+		method: 'GET',
+		headers: {
+			'x-rapidapi-host': process.env.rapidApiHost,
+			'x-rapidapi-key': process.env.rapidApiKey,
+		},
+	}),
+	{
+		maxRequests: 1,
+		perMilliseconds: 1000,
+	}
+);
+
+const getStats = async function() {
+	try {
+		await apiRequest(tigmarine);
+		await apiRequest(comTruise);
+		await apiRequest(dirtbagcf);
+		await apiRequest(rudwig);
+		initialStats[0].stats = { ...dataArray[0] };
+		initialStats[1].stats = { ...dataArray[1] };
+		initialStats[2].stats = { ...dataArray[2] };
+		initialStats[3].stats = { ...dataArray[3] };
+		console.log('InitialStats:', initialStats);
+	} catch (error) {
+		console.log(error);
+	}
+};
 
 const apiRequest = async function(user) {
 	await axiosInstance
 		.get(user)
 		.then((response) => {
 			dataArray.push(response.data.br_all);
-			initialStats[0].stats = { ...dataArray[0] };
-			initialStats[1].stats = { ...dataArray[1] };
-			initialStats[2].stats = { ...dataArray[2] };
-			initialStats[3].stats = { ...dataArray[3] };
-			console.log('InitialStats:', initialStats);
 		})
 		.catch((error) => {
 			console.log(error);
 		});
 };
 
-const getStats = async function() {
-	await apiRequest(tigmarine)
-		.then(async () => {
-			await apiRequest(comTruise);
-		})
-		.then(async () => {
-			await apiRequest(dirtbagcf);
-		})
-		.then(async () => {
-			await apiRequest(rudwig);
-		})
-		.catch((error) => {
-			console.log(error);
-		});
-};
-
-getStats();
 
 const startEmbed = new MessageEmbed()
 	.setColor('#0099ff')
 	.setTitle('Friday Night Warzone Night')
 	.setDescription('Session Initialised')
-	.setTimestamp()
 	.setThumbnail(
 		'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
 	)
@@ -76,6 +78,9 @@ module.exports = {
 		.setName('start')
 		.setDescription('Initialises warzone stats'),
 	async execute(interaction) {
+		await interaction.deferReply();
+		await getStats();
+		await wait(7000);
 		startEmbed.addFields(
 			{ name: '\u200B', value: '\u200B', inline: false },
 			{ name: 'Tigmarine', value: '\u200B', inline: true },
@@ -123,6 +128,6 @@ module.exports = {
 				inline: true,
 			}
 		);
-		await interaction.reply({ embeds: [startEmbed] });
+		await interaction.editReply({ embeds: [startEmbed] });
 	},
 };

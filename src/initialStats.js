@@ -1,18 +1,18 @@
 const initialStats = [
 	{
-		username: 'Tigmarine',
+		userName: 'Tigmarine',
 		userUrl: 'tigmarine%25231353/battle',
 	},
 	{
-		username: 'ComTruise',
+		userName: 'ComTruise',
 		userUrl: 'ComTruise%25231678/battle',
 	},
 	{
-		username: 'Dirtbagcf',
+		userName: 'Dirtbagcf',
 		userUrl: 'dirtbagcf%25231489/battle',
 	},
 	{
-		username: 'Rudwig',
+		userName: 'Rudwig',
 		userUrl: 'Rudwig%25231309/battle',
 	},
 ];
