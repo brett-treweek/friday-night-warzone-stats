@@ -7,6 +7,7 @@ const wait = require('util').promisify(setTimeout);
 
 const newDataArray = JSON.parse(JSON.stringify(initialStats));
 const dataArray = [];
+
 const Tigmarine =
 	'https://call-of-duty-modern-warfare.p.rapidapi.com/warzone/tigmarine%25231353/battle';
 const ComTruise =
@@ -24,26 +25,23 @@ const axiosInstance = rateLimit(axios.create({
 	},
 }), {
 	maxRequests: 1,
-	perMilliseconds: 1000,
+	perMilliseconds: 2000,
 });
 
 const getStats = async function() {
-	await apiRequest(Tigmarine)
-		.then(async () => {
-			await apiRequest(ComTruise);
-			await apiRequest(Dirtbagcf);
-			await apiRequest(Rudwig);
-		})
-		.then(() => {
-			newDataArray[0].stats = { ...dataArray[0] };
-			newDataArray[1].stats = { ...dataArray[1] };
-			newDataArray[2].stats = { ...dataArray[2] };
-			newDataArray[3].stats = { ...dataArray[3] };
-			console.log('newDataArray:', newDataArray);
-		})
-		.catch((error) => {
-			console.log(error);
-		});
+	try {
+		await apiRequest(Tigmarine);
+		await apiRequest(ComTruise);
+		await apiRequest(Dirtbagcf);
+		await apiRequest(Rudwig);
+		newDataArray[0].stats = { ...dataArray[0] };
+		newDataArray[1].stats = { ...dataArray[1] };
+		newDataArray[2].stats = { ...dataArray[2] };
+		newDataArray[3].stats = { ...dataArray[3] };
+		console.log('newDataArray:', newDataArray);
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 const apiRequest = async function(user) {
@@ -64,12 +62,12 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.deferReply();
 		await getStats();
-		await wait(7000);
+		await wait(5000);
 
 		const statsEmbed = new MessageEmbed()
 			.setColor('#00F0FF')
 			.setTitle('Friday Night Warzone Night')
-			.setDescription('Session Initialised')
+			.setDescription('Session Stats')
 			.setThumbnail(
 				'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
 			)
@@ -106,11 +104,6 @@ module.exports = {
 					inline: false,
 				},
 				{
-					name: '\u200B',
-					value: '\u200B',
-					inline: false,
-				},
-				{
 					name: '============ ComTruise ============',
 					value: '\u200B',
 					inline: false,
@@ -139,11 +132,6 @@ module.exports = {
 							(newDataArray[1].stats.deaths -
 								initialStats[1].stats.deaths)
 					)}`,
-					inline: false,
-				},
-				{
-					name: '\u200B',
-					value: '\u200B',
 					inline: false,
 				},
 				{
@@ -178,11 +166,6 @@ module.exports = {
 					inline: false,
 				},
 				{
-					name: '\u200B',
-					value: '\u200B',
-					inline: false,
-				},
-				{
 					name: '============ Rudwig ============',
 					value: '\u200B',
 					inline: false,
@@ -213,11 +196,6 @@ module.exports = {
 					)}`,
 					inline: false,
 				},
-				{
-					name: '\u200B',
-					value: '\u200B',
-					inline: false,
-				}
 			)
 			.setTimestamp()
 			.setFooter({
