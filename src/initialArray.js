@@ -1,4 +1,4 @@
-const initialStats = [
+const initialArray = [
 	{
 		userName: 'Tigmarine',
 		userUrl: 'tigmarine%25231353/battle',
@@ -17,4 +17,4 @@ const initialStats = [
 	},
 ];
 
-module.exports = initialStats;
+module.exports = initialArray;

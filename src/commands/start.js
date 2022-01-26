@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const axios = require('axios');
-const initialStats = require('../initialStats');
+const initialArray = require('../initialArray');
 const rateLimit = require('axios-rate-limit');
 const wait = require('util').promisify(setTimeout);
 
@@ -15,53 +15,59 @@ const axiosInstance = axios.create({
 
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
-	perMilliseconds: 2000,
+	perMilliseconds: 1500,
 });
 
 const getStats = function() {
 	try {
-		initialStats.map(async (user) => {
+		initialArray.map(async (user) => {
 			await http
 				.get(
 					`https://call-of-duty-modern-warfare.p.rapidapi.com/warzone/${user.userUrl}`
 				)
 				.then((response) => {
 					user.stats = response.data.br_all;
+					console.log('Initial Array Map:', user);
 				})
 				.catch((error) => {
 					console.log(error.message);
 				});
 		});
 	} catch (error) {
-		console.log(error);
+		console.log(error.message);
 	}
 };
-
-const startEmbed = new MessageEmbed()
-	.setColor('#0099ff')
-	.setTitle('Friday Night Warzone Night')
-	.setDescription('Session Initialised')
-	.addField('\u200B', '\u200B')
-	.setThumbnail(
-		'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
-	)
-	.addField('Session Stats!', 'To get session stats, type "/stats" in chat.')
-	.addField('\u200B', '\u200B')
-	.setTimestamp()
-	.setFooter({
-		text: 'Get better noobs',
-	});
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('start')
 		.setDescription('Initialises warzone stats'),
 	async execute(interaction) {
+
+		const startEmbed = new MessageEmbed()
+			.setColor('#0099ff')
+			.setTitle('Friday Night Warzone Night')
+			.setDescription('Session Initialised')
+			.addField('\u200B', '\u200B')
+			.setThumbnail(
+				'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
+			)
+			.addField(
+				'Session Stats!',
+				'To get session stats, type "/stats" in chat.'
+			)
+			.addField('\u200B', '\u200B')
+			.setTimestamp()
+			.setFooter({
+				text: 'Get better noobs',
+			});
+
 		await interaction.deferReply();
 		await getStats();
+		console.log('Initial Array:', initialArray);
 		await wait(8000);
-		console.log('Initial Stats:', initialStats);
-		initialStats.map((player) => {
+		console.log('Initial Stats 2!:', initialArray);
+		initialArray.map((player) => {
 			startEmbed.addFields(
 				{ name: `${player.userName}`, value: '\u200B', inline: true },
 				{
