@@ -18,6 +18,12 @@ const http = rateLimit(axiosInstance, {
 	perMilliseconds: 2000,
 });
 
+const average = function(x, y) {
+	if (isNaN(x / y)) {
+		return 0;
+	} return (x / y).toFixed(3);
+};
+
 const getStats = function(sessionArray) {
 	try {
 		sessionArray.map(async (user) => {
@@ -28,10 +34,6 @@ const getStats = function(sessionArray) {
 				.then((response) => {
 					user.stats = response.data.br_all;
 					console.log('Session Stats Map:', user);
-				})
-				.catch(async (error) => {
-					console.log(error.message);
-					return;
 				});
 		});
 	} catch (error) {
@@ -44,7 +46,6 @@ module.exports = {
 		.setName('stats')
 		.setDescription('Replies with session stats'),
 	async execute(interaction) {
-
 		const statsEmbed = new MessageEmbed()
 			.setColor('#00F0FF')
 			.setTitle('Session Stats')
@@ -62,56 +63,61 @@ module.exports = {
 		console.log('initialArray in stats command!', initialArray);
 
 		await interaction.deferReply();
-
-		try {
-			await getStats(sessionArray);
-		} catch (error) {
-			interaction.reply('failed, try again');
-		}
+		getStats(sessionArray);
 
 		await wait(8000);
 
 		console.log('Session Stats:', sessionArray);
 
 		sessionArray.map((s) => {
-			initialArray.map((i) => {
-				if (s.userName === i.userName) {
-					statsEmbed.addFields(
+			if (s.stats === undefined) {
+				return interaction.editReply(
+					`Something went wrong with ${s.userName}, Please try again`
+				);
+			} else {
+				initialArray.map((i) => {
+					if (s.userName === i.userName) {
 						{
-							name: `============ ${s.userName} ============`,
-							value: '\u200B',
-							inline: false,
-						},
-						{
-							name: 'Kills',
-							value: `${parseInt(s.stats.kills - i.stats.kills)}`,
-							inline: false,
-						},
-						{
-							name: 'Deaths',
-							value: `${parseInt(
-								s.stats.deaths - i.stats.deaths
-							)}`,
-							inline: false,
-						},
-						{
-							name: 'K/D',
-							value: `${
-								parseFloat(
-									(s.stats.kills - i.stats.kills) /
-										(s.stats.deaths - i.stats.deaths)
-								).toFixed(3) || '0'
-							}`,
-							inline: false,
-						},
-						{
-							name: 'Downs',
-							value: `${parseInt(s.stats.downs - i.stats.downs)}`,
-							inline: false,
-						},
-					);
-				}
-			});
+							statsEmbed.addFields(
+								{
+									name: `============ ${s.userName} ============`,
+									value: '\u200B',
+									inline: false,
+								},
+								{
+									name: 'Kills',
+									value: `${parseInt(
+										s.stats.kills - i.stats.kills
+									)}`,
+									inline: false,
+								},
+								{
+									name: 'Deaths',
+									value: `${parseInt(
+										s.stats.deaths - i.stats.deaths
+									)}`,
+									inline: false,
+								},
+								{
+									name: 'K/D',
+									value: `${average(
+										s.stats.kills - i.stats.kills,
+										s.stats.deaths - i.stats.deaths
+									)}`,
+									inline: false,
+								},
+								{
+									name: 'Downs',
+									value: `${parseInt(
+										s.stats.downs - i.stats.downs
+									)}`,
+									inline: false,
+								}
+							);
+						}
+					}
+				});
+			}
 		});
 		await interaction.editReply({ embeds: [statsEmbed] });
 	},

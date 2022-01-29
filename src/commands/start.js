@@ -28,9 +28,6 @@ const getStats = function() {
 				.then((response) => {
 					user.stats = response.data.br_all;
 					console.log('Initial Array Map:', user);
-				})
-				.catch((error) => {
-					console.log(error.message);
 				});
 		});
 	} catch (error) {
@@ -64,24 +61,28 @@ module.exports = {
 
 		await interaction.deferReply();
 		await getStats();
-		console.log('Initial Array:', initialArray);
 		await wait(8000);
-		console.log('Initial Stats 2!:', initialArray);
+
 		initialArray.map((player) => {
-			startEmbed.addFields(
-				{ name: `${player.userName}`, value: '\u200B', inline: true },
-				{
-					name: 'Wins',
-					value: `${player.stats.wins}`,
-					inline: true,
-				},
-				{
-					name: 'K/D',
-					value: `${player.stats.kdRatio.toFixed(3)}`,
-					inline: true,
-				}
-			);
+			if (player.stats === undefined) {
+				interaction.editReply(`Something went wrong with ${player.userName}, Please try again`);
+			} else {
+				startEmbed.addFields(
+					{ name: `${player.userName}`, value: '\u200B', inline: true },
+					{
+						name: 'Wins',
+						value: `${player.stats.wins}`,
+						inline: true,
+					},
+					{
+						name: 'K/D',
+						value: `${player.stats.kdRatio.toFixed(3)}`,
+						inline: true,
+					}
+				);
+			}
+			interaction.editReply({ embeds: [startEmbed] });
+
 		});
-		interaction.editReply({ embeds: [startEmbed] });
-	},
+	}
 };
