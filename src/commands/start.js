@@ -31,7 +31,7 @@ const getStats = function() {
 				});
 		});
 	} catch (error) {
-		console.log(error.message);
+		return console.log(error.message);
 	}
 };
 
