@@ -19,6 +19,12 @@ client.once('ready', () => {
 	console.log(`${client.user.username} has logged in!`);
 });
 
+client.on('interactionCreate', interaction => {
+	if (!interaction.isButton()) return;
+	console.log('Button pressed');
+	interaction.reply('you pressed my button');
+});
+
 client.on('interactionCreate', async (interaction) => {
 	if (!interaction.isCommand()) return;
 

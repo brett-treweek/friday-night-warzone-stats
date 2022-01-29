@@ -15,7 +15,7 @@ const axiosInstance = axios.create({
 
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
-	perMilliseconds: 1500,
+	perMilliseconds: 2000,
 });
 
 const getStats = function() {
@@ -39,6 +39,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('start')
 		.setDescription('Initialises warzone stats'),
+
 	async execute(interaction) {
 
 		const startEmbed = new MessageEmbed()

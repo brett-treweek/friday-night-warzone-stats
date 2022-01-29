@@ -4,6 +4,10 @@ const userDeets = [
 		userUrl: 'tigmarine%25231353/battle',
 	},
 	{
+		userName: 'Rudwig',
+		userUrl: 'Rudwig%25231309/battle',
+	},
+	{
 		userName: 'ComTruise',
 		userUrl: 'ComTruise%25231678/battle',
 	},

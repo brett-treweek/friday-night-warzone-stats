@@ -16,7 +16,7 @@ const axiosInstance = axios.create({
 
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
-	perMilliseconds: 1500,
+	perMilliseconds: 2000,
 });
 
 const average = function(x, y) {
