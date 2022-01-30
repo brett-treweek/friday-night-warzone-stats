@@ -32,27 +32,22 @@ module.exports = {
 				.addOptions([
 					{
 						label: 'Tigmarine',
-						// description: 'select tigmarine',
 						value: 'tigmarine%25231353/battle',
 					},
 					{
 						label: 'Rudwig',
-						// description: 'select rudwig',
 						value: 'Rudwig%25231309/battle',
 					},
 					{
 						label: 'Comtruise',
-						// description: 'select comtruise',
 						value: 'ComTruise%25231678/battle',
 					},
 					{
 						label: 'Dirtbagcf',
-						// description: 'select dirtbagcf',
 						value: 'dirtbagcf%25231489/battle',
 					},
 					{
 						label: 'Stubbie',
-						// description: 'select stubbie',
 						value: 'stubbie2002%25231337/battle',
 					},
 				])

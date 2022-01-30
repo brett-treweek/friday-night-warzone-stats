@@ -1,6 +1,7 @@
 const { Client, Collection, Intents } = require('discord.js');
 require('dotenv').config();
 const fs = require('fs');
+const getSessionStats = require('./getSessionStats');
 const getStats = require('./getStats');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -21,10 +22,7 @@ client.once('ready', () => {
 
 client.on('interactionCreate', async (interaction) => {
 	if (interaction.isCommand()) {
-		if (!interaction.isCommand()) return;
-
 		const command = client.commands.get(interaction.commandName);
-
 		if (!command) return;
 
 		try {
@@ -33,15 +31,26 @@ client.on('interactionCreate', async (interaction) => {
 			console.error(error.message);
 			return interaction.reply({
 				content: 'There was an error while executing this command!',
-				ephemeral: true,
+				// ephemeral: true,
 			});
 		}
+
 	} else if (interaction.isSelectMenu()) {
+
 		try {
 			if (interaction.customId == 'selected-players') {
 				console.log('selected players', interaction.values);
-				await interaction.reply('Done yo');
+				await interaction.reply('setting players');
 				getStats(interaction);
+			}
+		} catch (error) {
+			console.log(error.message);
+		}
+	} else if (interaction.isButton()) {
+		try {
+			if (interaction.customId == 'update') {
+				console.log('update button clicked:', interaction.customId);
+				getSessionStats(interaction);
 			}
 		} catch (error) {
 			console.log(error.message);
