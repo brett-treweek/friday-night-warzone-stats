@@ -25,8 +25,9 @@ module.exports = async (interaction) => {
 		)
 		.setTimestamp()
 		.setFooter({
-			text: 'Get better noobs',
+			text: 'Get fucked noobs',
 		});
 	console.log('interaction.values', interaction.customId);
+	// await interaction.deferUpdate();
 	await interaction.editReply({ components: [row], embeds: [startEmbed] });
 };

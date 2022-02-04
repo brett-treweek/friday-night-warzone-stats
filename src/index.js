@@ -40,8 +40,9 @@ client.on('interactionCreate', async (interaction) => {
 		try {
 			if (interaction.customId == 'selected-players') {
 				console.log('selected players', interaction.values);
-				await interaction.reply('setting players');
+				await interaction.deferUpdate();
 				getStats(interaction);
+				await interaction.update({ content: 'Players Selected', components: [] });
 			}
 		} catch (error) {
 			console.log(error.message);
@@ -51,6 +52,8 @@ client.on('interactionCreate', async (interaction) => {
 			if (interaction.customId == 'update') {
 				console.log('update button clicked:', interaction.customId);
 				getSessionStats(interaction);
+			} else if (interaction.customId == 'delete') {
+				interaction.update({ content: 'session ended', components: [] });
 			}
 		} catch (error) {
 			console.log(error.message);

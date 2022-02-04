@@ -8,8 +8,18 @@ module.exports = async (interaction) => {
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
 			.setCustomId('update')
-			.setLabel('Update')
+			.setLabel('Refresh Stats')
 			.setStyle('SUCCESS')
+		,
+		new MessageButton()
+			.setCustomId('setPlayers')
+			.setLabel('Change Players')
+			.setStyle('PRIMARY')
+		,
+		new MessageButton()
+			.setCustomId('delete')
+			.setLabel('End Session')
+			.setStyle('DANGER')
 	);
 	const sessionEmbed = new MessageEmbed()
 		.setColor('DARK_VIVID_PINK')

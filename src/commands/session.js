@@ -54,7 +54,7 @@ module.exports = {
 		);
 		await interaction.reply({
 			embeds: [startEmbed],
-			content: 'Select Team Members',
+			// content: 'Select Team Members',
 			components: [row],
 		});
 	},
