@@ -5,6 +5,7 @@ const {
 	MessageSelectMenu,
 } = require('discord.js');
 
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('session')
@@ -32,26 +33,27 @@ module.exports = {
 				.addOptions([
 					{
 						label: 'Tigmarine',
-						value: 'tigmarine%25231353/battle',
+						value: 'Tigmarine',
 					},
 					{
 						label: 'Rudwig',
-						value: 'Rudwig%25231309/battle',
+						value: 'Rudwig',
 					},
 					{
-						label: 'Comtruise',
-						value: 'ComTruise%25231678/battle',
+						label: 'ComTruise',
+						value: 'ComTruise',
 					},
 					{
 						label: 'Dirtbagcf',
-						value: 'dirtbagcf%25231489/battle',
+						value: 'Dirtbagcf',
 					},
 					{
 						label: 'Stubbie',
-						value: 'stubbie2002%25231337/battle',
+						value: 'Stubbie',
 					},
 				])
 		);
+
 		await interaction.reply({
 			embeds: [startEmbed],
 			// content: 'Select Team Members',

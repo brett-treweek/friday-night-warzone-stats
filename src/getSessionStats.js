@@ -30,10 +30,7 @@ module.exports = async (interaction) => {
 		.setThumbnail(
 			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
 		)
-		.setTimestamp()
-		.setFooter({
-			text: 'Get better noobs',
-		});
+		.setTimestamp();
 	// console.log('getSessionStats interaction', interaction);
 	await interaction.deferUpdate();
 	await wait(1000);

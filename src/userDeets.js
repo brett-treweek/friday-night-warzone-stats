@@ -15,6 +15,10 @@ const userDeets = [
 		userName: 'Dirtbagcf',
 		userUrl: 'dirtbagcf%25231489/battle',
 	},
+	{
+		userName: 'Stubbie',
+		userUrl: 'stubbie2002%25231337/battle',
+	}
 ];
 
 module.exports = userDeets;

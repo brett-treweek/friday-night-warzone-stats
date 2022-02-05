@@ -28,35 +28,45 @@ client.on('interactionCreate', async (interaction) => {
 		try {
 			await command.execute(interaction);
 		} catch (error) {
-			console.error(error.message);
-			return interaction.reply({
+			console.error('slash command error:', error.message);
+			return await interaction.reply({
 				content: 'There was an error while executing this command!',
-				// ephemeral: true,
 			});
 		}
 
 	} else if (interaction.isSelectMenu()) {
-
 		try {
 			if (interaction.customId == 'selected-players') {
+				const players = interaction.values;
 				console.log('selected players', interaction.values);
 				await interaction.deferUpdate();
-				getStats(interaction);
-				await interaction.update({ content: 'Players Selected', components: [] });
+				await getStats(interaction, players);
 			}
 		} catch (error) {
-			console.log(error.message);
+			console.log('select menu error:', error.message);
+			return interaction.reply({
+				content: 'There was an error while executing this command!',
+			});
 		}
+
 	} else if (interaction.isButton()) {
 		try {
 			if (interaction.customId == 'update') {
-				console.log('update button clicked:', interaction.customId);
-				getSessionStats(interaction);
+				console.log('button clicked:', interaction.customId);
+				await getSessionStats(interaction);
 			} else if (interaction.customId == 'delete') {
-				interaction.update({ content: 'session ended', components: [] });
+				await interaction.update({ content: 'session ended', components: [] });
+				console.log(
+					'session ended',
+					'button clicked:',
+					interaction.customId
+				);
 			}
 		} catch (error) {
 			console.log(error.message);
+			return interaction.reply({
+				content: 'There was an error while executing this command!',
+			});
 		}
 	}
 });
