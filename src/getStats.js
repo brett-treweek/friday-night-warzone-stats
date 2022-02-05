@@ -58,7 +58,7 @@ module.exports = async (interaction, players) => {
 		.setTimestamp();
 
 	console.log('getStats Axios reply:', initialArray);
-
+	// in operator => returns true if 'stats' property is in initialArray index :)
 	const currentPlayerArray = initialArray.filter((current) => 'stats' in current);
 
 	console.log('currentPlayerArray:', currentPlayerArray);

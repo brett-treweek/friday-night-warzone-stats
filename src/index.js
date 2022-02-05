@@ -3,6 +3,7 @@ require('dotenv').config();
 const fs = require('fs');
 const getSessionStats = require('./getSessionStats');
 const getStats = require('./getStats');
+const initialArray = require('./initialArray');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.commands = new Collection();
@@ -55,6 +56,7 @@ client.on('interactionCreate', async (interaction) => {
 				console.log('button clicked:', interaction.customId);
 				await getSessionStats(interaction);
 			} else if (interaction.customId == 'delete') {
+				initialArray.map((i) => delete i.stats);
 				await interaction.update({ content: 'session ended', components: [] });
 				console.log(
 					'session ended',
