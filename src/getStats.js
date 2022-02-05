@@ -28,7 +28,7 @@ const getStats = function(players) {
 						)
 						.then((response) => {
 							user.stats = response.data.br_all;
-							console.log('Initial Array Map:', user);
+							console.log('Initial Array Map:', user, response);
 						});
 				}
 			});
@@ -41,7 +41,7 @@ const getStats = function(players) {
 module.exports = async (interaction, players) => {
 	await getStats(players);
 	await wait(8000);
-	console.log('getStats players prop:', players, initialArray);
+	// console.log('getStats players prop:', players, initialArray);
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
 			.setCustomId('update')

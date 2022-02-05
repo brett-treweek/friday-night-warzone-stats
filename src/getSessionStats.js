@@ -1,5 +1,4 @@
 const axios = require('axios');
-const initialArray = require('./initialArray');
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const rateLimit = require('axios-rate-limit');
 const wait = require('util').promisify(setTimeout);
@@ -24,7 +23,7 @@ const average = function(x, y) {
 	return (x / y).toFixed(3);
 };
 
-const getStats = function(sessionArray) {
+const sessionStats = function(sessionArray) {
 	try {
 		sessionArray.map(async (user) => {
 			await http
@@ -33,7 +32,7 @@ const getStats = function(sessionArray) {
 				)
 				.then((response) => {
 					user.stats = response.data.br_all;
-					console.log('Session Stats Map:', user);
+					// console.log('Session Stats Map:', user);
 				});
 		});
 	} catch (error) {
@@ -42,7 +41,7 @@ const getStats = function(sessionArray) {
 };
 
 module.exports = async (interaction) => {
-	console.log('Start Button Pressed InitialArray:', initialArray);
+	// console.log('Start Button Pressed InitialArray:', initialArray);
 
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
@@ -71,8 +70,12 @@ module.exports = async (interaction) => {
 
 
 	await interaction.deferUpdate();
+	const initialArray = require('./initialArray');
 	const sessionArray = initialArray.filter((current) => 'stats' in current);
-	getStats(sessionArray);
+	sessionArray.map((s) => delete s.stats);
+	console.log('initialArray', initialArray);
+	console.log('sessionArray', sessionArray);
+	await sessionStats(sessionArray);
 	await wait(8000);
 
 	console.log('session and initial:', sessionArray, initialArray);

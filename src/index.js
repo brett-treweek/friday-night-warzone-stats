@@ -39,7 +39,7 @@ client.on('interactionCreate', async (interaction) => {
 		try {
 			if (interaction.customId == 'selected-players') {
 				const players = interaction.values;
-				console.log('selected players', interaction.values);
+				// console.log('selected players', interaction.values);
 				await interaction.deferUpdate();
 				await getStats(interaction, players);
 			}
@@ -53,7 +53,7 @@ client.on('interactionCreate', async (interaction) => {
 	} else if (interaction.isButton()) {
 		try {
 			if (interaction.customId == 'update') {
-				console.log('button clicked:', interaction.customId);
+				// console.log('button clicked:', interaction.customId);
 				await getSessionStats(interaction);
 			} else if (interaction.customId == 'delete') {
 				initialArray.map((i) => delete i.stats);
