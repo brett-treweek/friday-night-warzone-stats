@@ -38,26 +38,38 @@ const getStats = function(players) {
 	}
 };
 
+const loadingEmbed = new MessageEmbed()
+	.setColor('DARK_GREY')
+	.setTitle('Session Stats')
+	.setDescription('Fetching Players...')
+	.setThumbnail(
+		'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
+	)
+	.setTimestamp();
+
 module.exports = async (interaction, players) => {
+	await interaction.editReply({ embeds: [loadingEmbed], components: [] });
 	await getStats(players);
 	await wait(8000);
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
 			.setCustomId('update')
-			.setLabel('Start')
+			.setLabel('Start Session')
 			.setStyle('PRIMARY')
 	);
 	const startEmbed = new MessageEmbed()
-		.setColor('DARK_VIVID_PINK')
-		.setTitle('Friday Night Warzone Night')
-		.setDescription('Players')
+		.setColor('DARK_GOLD')
+		.setTitle('Warzone Session Stats')
+		.setDescription('\u200B')
 		.setThumbnail(
 			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
 		)
 		.setTimestamp();
 
 	// in operator => returns true if 'stats' property is in initialArray index :)
-	const currentPlayerArray = initialArray.filter((current) => 'stats' in current);
+	const currentPlayerArray = initialArray.filter(
+		(current) => 'stats' in current
+	);
 
 	currentPlayerArray.map(async (player) => {
 		if (player.stats === undefined) {

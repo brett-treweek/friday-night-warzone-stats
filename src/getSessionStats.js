@@ -49,7 +49,8 @@ module.exports = async (interaction) => {
 		new MessageButton()
 			.setCustomId('setPlayers')
 			.setLabel('Change Players')
-			.setStyle('PRIMARY'),
+			.setStyle('PRIMARY')
+			.setDisabled(true),
 		new MessageButton()
 			.setCustomId('delete')
 			.setLabel('End Session')
@@ -72,19 +73,28 @@ module.exports = async (interaction) => {
 			.setStyle('DANGER')
 			.setDisabled(true)
 	);
-	const sessionEmbed = new MessageEmbed()
-		.setColor('DARK_VIVID_PINK')
+	const loadingEmbed = new MessageEmbed()
+		.setColor('DARK_GREY')
 		.setTitle('Session Stats')
 		.setDescription(
-			'Session stats updated on demand by clicking Refresh Stats'
+			'Fetching Stats...'
 		)
 		.setThumbnail(
 			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
 		)
 		.setTimestamp();
 
+	const sessionEmbed = new MessageEmbed()
+		.setColor('DARK_GREEN')
+		.setTitle('Warzone Session Stats')
+		.setDescription('\u200B')
+		.setThumbnail(
+			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
+		)
+		.setTimestamp();
+
 	await interaction.deferUpdate();
-	await interaction.editReply({ components: [disabledRow], embeds: [sessionEmbed] });
+	await interaction.editReply({ components: [disabledRow], embeds: [loadingEmbed] });
 	const initialArray = require('./initialArray');
 	const playerArray = [];
 	initialArray.map((i) => {
