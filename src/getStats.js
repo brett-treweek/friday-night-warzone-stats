@@ -28,7 +28,7 @@ const getStats = function(players) {
 						)
 						.then((response) => {
 							user.stats = response.data.br_all;
-							console.log('Initial Array Map:', user, response);
+							console.log('Initial Array Map:', user);
 						});
 				}
 			});
@@ -41,7 +41,6 @@ const getStats = function(players) {
 module.exports = async (interaction, players) => {
 	await getStats(players);
 	await wait(8000);
-	// console.log('getStats players prop:', players, initialArray);
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
 			.setCustomId('update')
@@ -51,17 +50,14 @@ module.exports = async (interaction, players) => {
 	const startEmbed = new MessageEmbed()
 		.setColor('DARK_VIVID_PINK')
 		.setTitle('Friday Night Warzone Night')
-		.setDescription('Selected Players')
+		.setDescription('Players')
 		.setThumbnail(
 			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
 		)
 		.setTimestamp();
 
-	console.log('getStats Axios reply:', initialArray);
 	// in operator => returns true if 'stats' property is in initialArray index :)
 	const currentPlayerArray = initialArray.filter((current) => 'stats' in current);
-
-	console.log('currentPlayerArray:', currentPlayerArray);
 
 	currentPlayerArray.map(async (player) => {
 		if (player.stats === undefined) {

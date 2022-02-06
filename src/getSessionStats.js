@@ -23,16 +23,16 @@ const average = function(x, y) {
 	return (x / y).toFixed(3);
 };
 
-const sessionStats = function(sessionArray) {
+const sessionStats = function(playerArray) {
 	try {
-		sessionArray.map(async (user) => {
+		playerArray.map(async (user) => {
 			await http
 				.get(
 					`https://call-of-duty-modern-warfare.p.rapidapi.com/warzone/${user.userUrl}`
 				)
 				.then((response) => {
 					user.stats = response.data.br_all;
-					// console.log('Session Stats Map:', user);
+					console.log('Session Stats Map:', user);
 				});
 		});
 	} catch (error) {
@@ -41,8 +41,6 @@ const sessionStats = function(sessionArray) {
 };
 
 module.exports = async (interaction) => {
-	// console.log('Start Button Pressed InitialArray:', initialArray);
-
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
 			.setCustomId('update')
@@ -57,31 +55,49 @@ module.exports = async (interaction) => {
 			.setLabel('End Session')
 			.setStyle('DANGER')
 	);
+	const disabledRow = new MessageActionRow().addComponents(
+		new MessageButton()
+			.setCustomId('update')
+			.setLabel('Refresh Stats')
+			.setStyle('SUCCESS')
+			.setDisabled(true),
+		new MessageButton()
+			.setCustomId('setPlayers')
+			.setLabel('Change Players')
+			.setStyle('PRIMARY')
+			.setDisabled(true),
+		new MessageButton()
+			.setCustomId('delete')
+			.setLabel('End Session')
+			.setStyle('DANGER')
+			.setDisabled(true)
+	);
 	const sessionEmbed = new MessageEmbed()
 		.setColor('DARK_VIVID_PINK')
 		.setTitle('Session Stats')
 		.setDescription(
-			'Session stats updated every 5 mins or on demand by clicking update'
+			'Session stats updated on demand by clicking Refresh Stats'
 		)
 		.setThumbnail(
 			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
 		)
 		.setTimestamp();
 
-
 	await interaction.deferUpdate();
+	await interaction.editReply({ components: [disabledRow], embeds: [sessionEmbed] });
 	const initialArray = require('./initialArray');
-	const sessionArray = initialArray.filter((current) => 'stats' in current);
-	sessionArray.map((s) => delete s.stats);
-	console.log('initialArray', initialArray);
-	console.log('sessionArray', sessionArray);
-	await sessionStats(sessionArray);
+	const playerArray = [];
+	initialArray.map((i) => {
+		const iCopy = { ...i };
+		if ('stats' in iCopy) {
+			playerArray.push(iCopy);
+		}
+	});
+
+	sessionStats(playerArray);
 	await wait(8000);
 
-	console.log('session and initial:', sessionArray, initialArray);
-
-
-	sessionArray.map((s) => {
+	playerArray.map((s) => {
 		if (s.stats === undefined) {
 			return interaction.editReply(
 				`Something went wrong with ${s.userName}, Please try again`
@@ -127,7 +143,6 @@ module.exports = async (interaction) => {
 			});
 		}
 	});
-
 
 	await interaction.editReply({ components: [row], embeds: [sessionEmbed] });
 };
