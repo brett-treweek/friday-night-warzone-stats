@@ -14,8 +14,27 @@ const axiosInstance = axios.create({
 
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
-	perMilliseconds: 1500,
+	perMilliseconds: 1600,
 });
+
+const throttle = async (players) => {
+	console.log('players length', players.length);
+	switch (players.length) {
+	case 4:
+		await wait(8000);
+		break;
+	case 3:
+		await wait(6000);
+		break;
+	case 2:
+		await wait(4000);
+		break;
+
+	default:
+		await wait(2000);
+		break;
+	}
+};
 
 const getStats = function(players) {
 	try {
@@ -50,7 +69,7 @@ const loadingEmbed = new MessageEmbed()
 module.exports = async (interaction, players) => {
 	await interaction.editReply({ embeds: [loadingEmbed], components: [] });
 	await getStats(players);
-	await wait(8000);
+	await throttle(players);
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
 			.setCustomId('update')

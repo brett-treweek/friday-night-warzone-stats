@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
-	perMilliseconds: 2000,
+	perMilliseconds: 1600,
 });
 
 const average = function(x, y) {
@@ -21,6 +21,24 @@ const average = function(x, y) {
 		return 0;
 	}
 	return (x / y).toFixed(3);
+};
+
+const throttle = async function(playerArray) {
+	switch (playerArray.length) {
+	case 4:
+		await wait(8000);
+		break;
+	case 3:
+		await wait(6000);
+		break;
+	case 2:
+		await wait(4000);
+		break;
+
+	default:
+		await wait(2000);
+		break;
+	}
 };
 
 const sessionStats = function(playerArray) {
@@ -97,6 +115,7 @@ module.exports = async (interaction) => {
 	await interaction.editReply({ components: [disabledRow], embeds: [loadingEmbed] });
 	const initialArray = require('./initialArray');
 	const playerArray = [];
+
 	initialArray.map((i) => {
 		const iCopy = { ...i };
 		if ('stats' in iCopy) {
@@ -105,7 +124,7 @@ module.exports = async (interaction) => {
 	});
 
 	sessionStats(playerArray);
-	await wait(8000);
+	await throttle(playerArray);
 
 	playerArray.map((s) => {
 		if (s.stats === undefined) {
