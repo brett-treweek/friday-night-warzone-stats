@@ -14,7 +14,7 @@ const axiosInstance = axios.create({
 
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
-	perMilliseconds: 1600,
+	perMilliseconds: 1500,
 });
 
 const throttle = async (players) => {
@@ -37,24 +37,27 @@ const throttle = async (players) => {
 };
 
 const getStats = function(players) {
-	try {
-		initialArray.map((user) => {
+	initialArray.forEach((user) => {
+		try {
 			players.forEach(async (player) => {
 				if (user.userName === player) {
+					console.time(`${user.userName}`);
+
 					await http
 						.get(
 							`https://call-of-duty-modern-warfare.p.rapidapi.com/warzone/${user.userUrl}`
 						)
 						.then((response) => {
 							user.stats = response.data.br_all;
-							console.log('Initial Array Map:', user);
+							console.log('Initial Array Data:', user);
 						});
+					console.timeEnd(`${user.userName}`);
 				}
 			});
-		});
-	} catch (error) {
-		return console.log(error.message);
-	}
+		} catch (error) {
+			return console.log(error.message);
+		}
+	});
 };
 
 const loadingEmbed = new MessageEmbed()

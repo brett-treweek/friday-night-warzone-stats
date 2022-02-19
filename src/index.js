@@ -44,7 +44,7 @@ client.on('interactionCreate', async (interaction) => {
 			}
 		} catch (error) {
 			console.log('select menu error:', error.message);
-			return interaction.reply({
+			return await interaction.reply({
 				content: 'There was an error while executing this command!',
 			});
 		}
@@ -54,7 +54,7 @@ client.on('interactionCreate', async (interaction) => {
 			if (interaction.customId == 'update') {
 				await getSessionStats(interaction);
 			} else if (interaction.customId == 'delete') {
-				initialArray.map((i) => delete i.stats);
+				initialArray.forEach((i) => delete i.stats);
 				await interaction.update({ content: 'session ended', components: [] });
 				console.log(
 					'session ended',

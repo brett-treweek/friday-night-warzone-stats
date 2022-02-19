@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
-	perMilliseconds: 1600,
+	perMilliseconds: 1500,
 });
 
 const average = function(x, y) {
@@ -43,18 +43,20 @@ const throttle = async function(playerArray) {
 
 const sessionStats = function(playerArray) {
 	try {
-		playerArray.map(async (user) => {
+		playerArray.forEach(async (user) => {
+			console.time(user.userName);
 			await http
 				.get(
 					`https://call-of-duty-modern-warfare.p.rapidapi.com/warzone/${user.userUrl}`
 				)
 				.then((response) => {
 					user.stats = response.data.br_all;
-					console.log('Session Stats Map:', user);
+					console.log('Session Stats Data:', user);
 				});
+			console.timeEnd(user.userName);
 		});
 	} catch (error) {
-		return console.log('Error with axios request', error.message);
+		console.log('Error with axios request', error.message);
 	}
 };
 
