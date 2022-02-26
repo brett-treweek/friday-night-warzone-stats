@@ -14,7 +14,7 @@ const axiosInstance = axios.create({
 
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
-	perMilliseconds: 1500,
+	perMilliseconds: 1800,
 });
 
 const throttle = async (players) => {
@@ -24,19 +24,19 @@ const throttle = async (players) => {
 		await wait(8000);
 		break;
 	case 3:
-		await wait(6000);
+		await wait(6500);
 		break;
 	case 2:
-		await wait(4000);
+		await wait(4500);
 		break;
 
 	default:
-		await wait(2000);
+		await wait(3000);
 		break;
 	}
 };
 
-const getStats = function(players) {
+const getStats = function(interaction, players) {
 	initialArray.forEach((user) => {
 		try {
 			players.forEach(async (player) => {
@@ -50,6 +50,9 @@ const getStats = function(players) {
 						.then((response) => {
 							user.stats = response.data.br_all;
 							console.log('Initial Array Data:', user);
+						})
+						.catch(async (error) => {
+							console.error('ERROR!!!', error.message);
 						});
 					console.timeEnd(`${user.userName}`);
 				}
@@ -71,7 +74,7 @@ const loadingEmbed = new MessageEmbed()
 
 module.exports = async (interaction, players) => {
 	await interaction.editReply({ embeds: [loadingEmbed], components: [] });
-	await getStats(players);
+	await getStats(interaction, players);
 	await throttle(players);
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()

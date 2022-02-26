@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
-	perMilliseconds: 1500,
+	perMilliseconds: 1800,
 });
 
 const average = function(x, y) {
@@ -29,10 +29,10 @@ const throttle = async function(playerArray) {
 		await wait(8000);
 		break;
 	case 3:
-		await wait(6000);
+		await wait(6500);
 		break;
 	case 2:
-		await wait(4000);
+		await wait(4500);
 		break;
 
 	default:
