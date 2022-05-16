@@ -3,6 +3,7 @@ const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const rateLimit = require('axios-rate-limit');
 const wait = require('util').promisify(setTimeout);
 
+// Creates axios instance with .env variables/API key.
 const axiosInstance = axios.create({
 	method: 'GET',
 	headers: {
@@ -11,11 +12,13 @@ const axiosInstance = axios.create({
 	},
 });
 
+// Third party package to limit axios calls per second. Needed as free api tier only allows for 1 call per second.
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
 	perMilliseconds: 1800,
 });
 
+// Function used to get an average of kills/deaths and set to three decimals.
 const average = function(x, y) {
 	if (isNaN(x / y)) {
 		return 0;
@@ -23,6 +26,7 @@ const average = function(x, y) {
 	return (x / y).toFixed(3);
 };
 
+// Function takes players array and sets timeout dependant on players array length to ensure that axios calls have finished before discord edits reply.
 const throttle = async function(playerArray) {
 	switch (playerArray.length) {
 	case 4:
@@ -41,6 +45,7 @@ const throttle = async function(playerArray) {
 	}
 };
 
+// Function to loop through players in playerArray make axios request to api to get latest user stats.
 const sessionStats = function(playerArray) {
 	try {
 		playerArray.forEach(async (user) => {
@@ -61,6 +66,7 @@ const sessionStats = function(playerArray) {
 };
 
 module.exports = async (interaction) => {
+	// Buttons- refresh stats, change players(disabled), end session.
 	const row = new MessageActionRow().addComponents(
 		new MessageButton()
 			.setCustomId('update')
@@ -76,6 +82,7 @@ module.exports = async (interaction) => {
 			.setLabel('End Session')
 			.setStyle('DANGER')
 	);
+	// Disabled buttons used when fetching data/ loading.
 	const disabledRow = new MessageActionRow().addComponents(
 		new MessageButton()
 			.setCustomId('update')
@@ -93,17 +100,18 @@ module.exports = async (interaction) => {
 			.setStyle('DANGER')
 			.setDisabled(true)
 	);
+
+	// Embed used when fetching data/ loading.
 	const loadingEmbed = new MessageEmbed()
 		.setColor('DARK_GREY')
 		.setTitle('Session Stats')
-		.setDescription(
-			'Fetching Stats...'
-		)
+		.setDescription('Fetching Stats...')
 		.setThumbnail(
 			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsGP5oFfsKHMwB_y0hhBJqftHla8DWlRI0dw&usqp=CAU'
 		)
 		.setTimestamp();
 
+	// Embed used after fetching data to show updated stats. This embed will have stats added to dynamically in line 154 below.
 	const sessionEmbed = new MessageEmbed()
 		.setColor('DARK_GREEN')
 		.setTitle('Warzone Session Stats')
@@ -114,10 +122,14 @@ module.exports = async (interaction) => {
 		.setTimestamp();
 
 	await interaction.deferUpdate();
-	await interaction.editReply({ components: [disabledRow], embeds: [loadingEmbed] });
+	await interaction.editReply({
+		components: [disabledRow],
+		embeds: [loadingEmbed],
+	});
 	const initialArray = require('./initialArray');
 	const playerArray = [];
 
+	// Map function - makes copy of initialArray so I dont mutate initialArray as I still need initial stats for comparison.
 	initialArray.map((i) => {
 		const iCopy = { ...i };
 		if ('stats' in iCopy) {
@@ -125,9 +137,12 @@ module.exports = async (interaction) => {
 		}
 	});
 
+	// SessionStats function gets updated stats for playerArray.
 	sessionStats(playerArray);
+	// Set timeout based on how many api calls needed.
 	await throttle(playerArray);
 
+	// Function to compare playerArray stats to initialArray stats. Adds difference in stats to discord message.
 	playerArray.map((s) => {
 		if (s.stats === undefined) {
 			return interaction.editReply(
@@ -175,5 +190,6 @@ module.exports = async (interaction) => {
 		}
 	});
 
+	// Edited reply to discord with updated session stats.
 	await interaction.editReply({ components: [row], embeds: [sessionEmbed] });
 };

@@ -7,6 +7,7 @@ const {
 
 
 module.exports = {
+	// creates instance of slash command builder with '/session' command. This command is used to initialize app and will reply with start embed and 'select players' select menu as a response.
 	data: new SlashCommandBuilder()
 		.setName('session')
 		.setDescription('Sets team members for session'),

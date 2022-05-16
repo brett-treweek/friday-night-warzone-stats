@@ -4,6 +4,7 @@ const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const rateLimit = require('axios-rate-limit');
 const wait = require('util').promisify(setTimeout);
 
+// Creates axios instance with .env variables/API key.
 const axiosInstance = axios.create({
 	method: 'GET',
 	headers: {
@@ -12,11 +13,13 @@ const axiosInstance = axios.create({
 	},
 });
 
+// Third party package to limit axios calls per second. Needed as free api tier only allows for 1 call per second.
 const http = rateLimit(axiosInstance, {
 	maxRequests: 1,
 	perMilliseconds: 1800,
 });
 
+// Function takes players array and sets timeout dependant on players array length to ensure that axios calls have finished before discord edits reply.
 const throttle = async (players) => {
 	console.log('players length', players.length);
 	switch (players.length) {
@@ -36,6 +39,7 @@ const throttle = async (players) => {
 	}
 };
 
+// Function that gets userUrl of chosen players from initialArray, makes axios call for each chosen player and appends response(data) to initialArray. Console.time() used to time each axios call because api is unreliable.
 const getStats = function(interaction, players) {
 	initialArray.forEach((user) => {
 		try {
@@ -63,6 +67,7 @@ const getStats = function(interaction, players) {
 	});
 };
 
+// Embed used when fetching data/ loading.
 const loadingEmbed = new MessageEmbed()
 	.setColor('DARK_GREY')
 	.setTitle('Session Stats')
@@ -72,6 +77,7 @@ const loadingEmbed = new MessageEmbed()
 	)
 	.setTimestamp();
 
+// Exported function from this module.
 module.exports = async (interaction, players) => {
 	await interaction.editReply({ embeds: [loadingEmbed], components: [] });
 	await getStats(interaction, players);
@@ -96,6 +102,7 @@ module.exports = async (interaction, players) => {
 		(current) => 'stats' in current
 	);
 
+	// Adds players names and overall K/D.
 	currentPlayerArray.map(async (player) => {
 		if (player.stats === undefined) {
 			interaction.editReply(
@@ -115,6 +122,7 @@ module.exports = async (interaction, players) => {
 					inline: true,
 				}
 			);
+			// Edits discord message with players overview and start session button.
 			await interaction.editReply({
 				components: [row],
 				embeds: [startEmbed],

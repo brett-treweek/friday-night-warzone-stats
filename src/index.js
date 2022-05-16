@@ -17,11 +17,14 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
+
 client.once('ready', () => {
 	console.log(`${client.user.username} has logged in!`);
 });
 
+// Command Handling by discord.js. Slash, Select-Menu, Buttons.
 client.on('interactionCreate', async (interaction) => {
+	// /session Slash command to start app.
 	if (interaction.isCommand()) {
 		const command = client.commands.get(interaction.commandName);
 		if (!command) return;
@@ -36,6 +39,7 @@ client.on('interactionCreate', async (interaction) => {
 		}
 
 	} else if (interaction.isSelectMenu()) {
+		// Select Menu to choose players.
 		try {
 			if (interaction.customId == 'selected-players') {
 				const players = interaction.values;
@@ -50,6 +54,7 @@ client.on('interactionCreate', async (interaction) => {
 		}
 
 	} else if (interaction.isButton()) {
+		// Buttons to refresh stats, and end session. Change players button is disabled because functionality not yet implemented.
 		try {
 			if (interaction.customId == 'update') {
 				await getSessionStats(interaction);
@@ -70,4 +75,5 @@ client.on('interactionCreate', async (interaction) => {
 	}
 });
 
+// Connecting to discord client with .env variables.
 client.login(process.env.token);
